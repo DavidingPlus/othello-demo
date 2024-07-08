@@ -65,7 +65,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
 {
     bool rightflag = false;
     int x = xIndex, y = yIndex;
-    if (nowPlayer == 0 && m_data[yIndex * 8 + xIndex].state() == MyCircle::unActivated)
+    if (nowPlayer == 0 && m_data[yIndex * 8 + xIndex].state() == MyCircle::UnActivated)
     {
         x = xIndex;
         y = yIndex;
@@ -73,7 +73,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             x++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[y * 8 + x + 1].state() == MyCircle::Head && x != xIndex)
             {
@@ -101,7 +101,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x].state() == MyCircle::Head && y != yIndex)
             {
@@ -129,7 +129,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             x--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[y * 8 + x - 1].state() == MyCircle::Head && x != xIndex)
             {
@@ -157,7 +157,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while ((m_data[y * 8 + x].state() != MyCircle::Head) && (m_data[y * 8 + x].state() != MyCircle::unActivated))
+        while ((m_data[y * 8 + x].state() != MyCircle::Head) && (m_data[y * 8 + x].state() != MyCircle::UnActivated))
         {
             if (m_data[(y - 1) * 8 + x].state() == MyCircle::Head && y != yIndex)
             {
@@ -189,7 +189,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x + 1].state() == MyCircle::Head && y != yIndex)
             {
@@ -229,7 +229,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x - 1].state() == MyCircle::Head && y != yIndex)
             {
@@ -269,7 +269,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y - 1) * 8 + x + 1].state() == MyCircle::Head && y != yIndex)
             {
@@ -309,7 +309,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Head && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y - 1) * 8 + x - 1].state() == MyCircle::Head && y != yIndex)
             {
@@ -339,7 +339,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
             }
         }
     }
-    else if (nowPlayer == 1 && m_data[yIndex * 8 + xIndex].state() == MyCircle::unActivated)
+    else if (nowPlayer == 1 && m_data[yIndex * 8 + xIndex].state() == MyCircle::UnActivated)
     {
         x = xIndex;
         y = yIndex;
@@ -347,7 +347,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             x++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[y * 8 + x + 1].state() == MyCircle::Tail && x != xIndex)
             {
@@ -375,7 +375,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x].state() == MyCircle::Tail && y != yIndex)
             {
@@ -403,7 +403,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             x--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[y * 8 + x - 1].state() == MyCircle::Tail && x != xIndex)
             {
@@ -431,7 +431,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while ((m_data[y * 8 + x].state() != MyCircle::Tail) && (m_data[y * 8 + x].state() != MyCircle::unActivated))
+        while ((m_data[y * 8 + x].state() != MyCircle::Tail) && (m_data[y * 8 + x].state() != MyCircle::UnActivated))
         {
             if (m_data[(y - 1) * 8 + x].state() == MyCircle::Tail && y != yIndex)
             {
@@ -463,7 +463,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x + 1].state() == MyCircle::Tail && y != yIndex)
             {
@@ -503,7 +503,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y++;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y + 1) * 8 + x - 1].state() == MyCircle::Tail && y != yIndex)
             {
@@ -543,7 +543,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y - 1) * 8 + x + 1].state() == MyCircle::Tail && y != yIndex)
             {
@@ -583,7 +583,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         {
             y--;
         }
-        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::unActivated)
+        while (m_data[y * 8 + x].state() != MyCircle::Tail && m_data[y * 8 + x].state() != MyCircle::UnActivated)
         {
             if (m_data[(y - 1) * 8 + x - 1].state() == MyCircle::Tail && y != yIndex)
             {
@@ -614,7 +614,7 @@ bool OthelloWindow::OthelloMove(int xIndex, int yIndex)
         }
         if (rightflag != 1) rightflag = false;
     }
-    else if (m_data[yIndex * 8 + xIndex].state() != MyCircle::unActivated)
+    else if (m_data[yIndex * 8 + xIndex].state() != MyCircle::UnActivated)
     {
         rightflag = false;
     }
