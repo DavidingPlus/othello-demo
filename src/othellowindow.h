@@ -1,10 +1,13 @@
 #ifndef _OTHELLOWINDOW_H_
 #define _OTHELLOWINDOW_H_
 
-#include "lcanvaswindow.h"
+#include "ldrawwindow.h"
+#include "lvector.h"
+#include "canvascircle.h"
+#include "lmouseevent.h"
 
 
-class OthelloWindow : public LCanvasWindow
+class OthelloWindow : public LDrawWindow
 {
 
 public:
@@ -14,7 +17,12 @@ public:
 
 protected:
 
-    void handleMousePressEvent(LMouseEvent *e) {}
+    void handleMousePressEvent(LMouseEvent *e) override;
+
+
+private:
+
+    LVector<CanvasCircle> m_data;
 };
 
 
