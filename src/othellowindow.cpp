@@ -3,8 +3,13 @@
 
 OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
 {
+    // 填充背景为白色
+    m_pDrawContext->setBrushColor(LColor(0xffffff));
+    m_pDrawContext->fillRect(LRect(0, 0, sideLen, sideLen));
+
     int sectionLen = sideLen / 8;
 
+    // 初始化所有棋子的数据
     m_data.reserve(64);
     for (int i = 0; i < 64; ++i)
     {
@@ -14,9 +19,19 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
         m_data.append(LCircle(xIndex * sectionLen + sectionLen / 2, yIndex * sectionLen + sectionLen / 2, sectionLen / 2));
     }
 
-    m_pDrawContext->setBrushColor(LColor(0xffffff));
-    m_pDrawContext->fillRect(LRect(0, 0, sideLen, sideLen));
+    m_data[27].m_mode = CanvasCircle::PieceMode::Tail;
+    m_data[27].paint(m_pDrawContext);
 
+    m_data[28].m_mode = CanvasCircle::PieceMode::Head;
+    m_data[28].paint(m_pDrawContext);
+
+    m_data[35].m_mode = CanvasCircle::PieceMode::Head;
+    m_data[35].paint(m_pDrawContext);
+
+    m_data[36].m_mode = CanvasCircle::PieceMode::Tail;
+    m_data[36].paint(m_pDrawContext);
+
+    // 画棋盘的分割线
     m_pDrawContext->setPenColor(LColor(0x000000));
     for (int i = 1; i < 8; ++i)
     {
@@ -35,7 +50,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
         int yIndex = e->y() / sectionLen;
 
         m_data[8 * yIndex + xIndex].onActivated();
-        m_data[8 * yIndex + xIndex].paint(drawContext());
+        m_data[8 * yIndex + xIndex].paint(m_pDrawContext);
 
         repaint();
     }

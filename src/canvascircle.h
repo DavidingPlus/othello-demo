@@ -29,8 +29,9 @@ public:
 
     const LCircle &circle() const { return m_circle; }
 
-    // unused
-    virtual LRect boundingRect() const override { return LRect(); }
+    PieceMode mode() const { return m_mode; }
+
+    virtual LRect boundingRect() const override { return LRect(m_circle.m_roundCenterX - m_circle.m_roundRadius, m_circle.m_roundCenterY - m_circle.m_roundRadius, 2 * m_circle.m_roundRadius, 2 * m_circle.m_roundRadius); }
 
     virtual void paint(LDrawContext *dc) override;
 
