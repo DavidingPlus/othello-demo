@@ -12,11 +12,16 @@ class CanvasCircle : public LCanvasItem
 
 public:
 
+    enum PieceMode
+    {
+        unActivated = 0, ///< 未激活
+        Head,            ///< 正面
+        Tail             ///< 反面
+    };
+
     CanvasCircle() : LCanvasItem() {}
 
-    ~CanvasCircle() = default;
-
-    virtual LRect boundingRect() const override;
+    const LCircle &circle() const { return m_circle; }
 
     virtual void paint(LDrawContext *dc) override;
 
@@ -29,6 +34,8 @@ protected:
 private:
 
     LCircle m_circle;
+
+    PieceMode m_mode = PieceMode::unActivated;
 };
 
 
