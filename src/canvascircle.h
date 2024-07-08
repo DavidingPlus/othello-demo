@@ -1,51 +1,37 @@
-#ifndef _CANVASCIRCLE_H_
-#define _CANVASCIRCLE_H_
+#ifndef _MYCIRCLE_H_
+#define _MYCIRCLE_H_
 
-#include "lcanvasitem.h"
 #include "lrect.h"
 #include "lcircle.h"
+#include "ldrawcontext.h"
 
 
-class OthelloWindow;
-
-
-class CanvasCircle : public LCanvasItem
+class MyCircle : public LCircle
 {
-
-    friend class OthelloWindow;
 
 public:
 
-    enum PieceMode
+    enum PieceState
     {
         unActivated = 0, ///< 未激活
         Head,            ///< 正面
         Tail             ///< 反面
     };
 
-    CanvasCircle() : LCanvasItem() {}
+    MyCircle() : LCircle() {}
 
-    CanvasCircle(const LCircle &circle) : m_circle(circle) {}
+    MyCircle(int x, int y, int r) : LCircle(x, y, r) {}
 
-    const LCircle &circle() const { return m_circle; }
+    PieceState state() const { return m_state; }
 
-    PieceMode mode() const { return m_mode; }
+    void setState(PieceState state) { m_state = state; }
 
-    virtual LRect boundingRect() const override { return LRect(m_circle.m_roundCenterX - m_circle.m_roundRadius, m_circle.m_roundCenterY - m_circle.m_roundRadius, 2 * m_circle.m_roundRadius, 2 * m_circle.m_roundRadius); }
-
-    virtual void paint(LDrawContext *dc) override;
-
-
-protected:
-
-    virtual void onActivated() override;
+    void paint(LDrawContext *dc);
 
 
 private:
 
-    LCircle m_circle;
-
-    PieceMode m_mode = PieceMode::unActivated;
+    PieceState m_state = PieceState::unActivated;
 };
 
 

@@ -22,7 +22,7 @@ protected:
 
 private:
 
-    LVector<CanvasCircle> m_data;
+    LVector<MyCircle> m_data;
 };
 
 

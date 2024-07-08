@@ -1,41 +1,25 @@
 #include "canvascircle.h"
 
 
-void CanvasCircle::paint(LDrawContext *dc)
+void MyCircle::paint(LDrawContext *dc)
 {
-    switch (m_mode)
+    switch (m_state)
     {
-        case PieceMode::unActivated:
+        case PieceState::unActivated:
             break;
-        case PieceMode::Head:
+        case PieceState::Head:
         {
             dc->setBrushColor(LColor(0xff0000));
-            dc->fillCircle(m_circle);
+            dc->fillCircle(LCircle(m_roundCenterX, m_roundCenterY, m_roundRadius));
 
             break;
         }
-        case PieceMode::Tail:
+        case PieceState::Tail:
         {
             dc->setBrushColor(LColor(0x0000ff));
-            dc->fillCircle(m_circle);
+            dc->fillCircle(LCircle(m_roundCenterX, m_roundCenterY, m_roundRadius));
 
             break;
         }
-    }
-}
-
-void CanvasCircle::onActivated()
-{
-    switch (m_mode)
-    {
-        case PieceMode::unActivated:
-            m_mode = PieceMode::Head;
-            break;
-        case PieceMode::Head:
-            m_mode = PieceMode::Tail;
-            break;
-        case PieceMode::Tail:
-            m_mode = PieceMode::Head;
-            break;
     }
 }
