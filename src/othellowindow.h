@@ -22,7 +22,13 @@ protected:
 
 private:
 
+    int nowPlayer = 0;
+
     LVector<MyCircle> m_data;
+
+    // void OthelloMove(int xIndex, int yIndex);
+
+    bool OthelloMove(int xIndex, int yIndex);
 };
 
 
