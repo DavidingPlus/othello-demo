@@ -1,0 +1,5 @@
+[requires]
+LarkSDK/[~5.2.1]@sinux/dev
+
+[generators]
+cmake

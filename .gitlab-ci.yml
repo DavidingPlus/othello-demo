@@ -1,0 +1,25 @@
+variables:
+  yml_project_dir: ${CI_PROJECT_DIR}
+
+include:
+  - project: 'LarkStudio/LarkPri'
+    ref: main
+    file: '/CI/yml/lark5.yml'
+
+
+# Build
+build_x86:
+  variables:
+    script_file_name: ./CI/build.sh
+  extends:
+    - .linux_gcc_x86_build_template
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "schedule"
+
+build_arm:
+  variables:
+    script_file_name: ./CI/build.sh
+  extends:
+    - .linux_gcc_arm_build_template
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "schedule"

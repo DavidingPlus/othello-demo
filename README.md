@@ -1,3 +1,4 @@
 # Othello Demo
 
-黑白棋 Demo 。
+基于 LarkSDK 的黑白棋 Demo
+
