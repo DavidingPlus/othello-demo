@@ -3,8 +3,9 @@
 
 #include "ldrawwindow.h"
 #include "lvector.h"
-#include "canvascircle.h"
 #include "lmouseevent.h"
+
+#include "canvascircle.h"
 
 
 class OthelloWindow : public LDrawWindow

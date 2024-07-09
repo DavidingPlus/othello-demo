@@ -13,7 +13,7 @@ public:
 
     enum PieceState
     {
-        UnActivated = 0, ///< 未激活
+        unActivated = 0, ///< 未激活
         Head,            ///< 正面
         Tail             ///< 反面
     };
@@ -31,7 +31,7 @@ public:
 
 private:
 
-    PieceState m_state = PieceState::UnActivated;
+    PieceState m_state = PieceState::unActivated;
 };
 
 

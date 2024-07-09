@@ -1,11 +1,11 @@
-#include "canvascircle.h"
+#include "mycircle.h"
 
 
 void MyCircle::paint(LDrawContext *dc)
 {
     switch (m_state)
     {
-        case PieceState::UnActivated:
+        case PieceState::unActivated:
             break;
         case PieceState::Head:
         {
