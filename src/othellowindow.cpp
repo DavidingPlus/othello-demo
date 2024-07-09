@@ -6,6 +6,13 @@
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 
 
+OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
+{
+    LDrawWindow::setTitle("黑白棋");
+
+    init();
+}
+
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
     if (Lark::Mouse_LeftButton == e->buttonCode())
@@ -17,7 +24,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
             return;
         }
 
-        int sectionLen = width() / 8;
+        int sectionLen = LDrawWindow::width() / 8;
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
@@ -39,7 +46,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
                     LLog::log() << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!");
 
-                    repaint();
+                    LDrawWindow::repaint();
 
                     return;
                 }
@@ -47,7 +54,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
             LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
 
-            repaint();
+            LDrawWindow::repaint();
         }
     }
 }
@@ -176,7 +183,7 @@ void OthelloWindow::init()
         m_nowPlayer = true;
     }
 
-    int sideLen = width();
+    int sideLen = LDrawWindow::width();
     int sectionLen = sideLen / 8;
 
     // 填充背景为白色
@@ -223,6 +230,6 @@ void OthelloWindow::init()
     if (m_isGameOver)
     {
         m_isGameOver = false;
-        repaint();
+        LDrawWindow::repaint();
     }
 }

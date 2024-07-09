@@ -11,17 +11,25 @@
 #include "mycircle.h"
 
 
+class MessageWindow;
+
+
 class OthelloWindow : public LDrawWindow
 {
 
+    friend class MessageWindow;
+
+
 public:
 
-    OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen) { init(); }
+    OthelloWindow(int sideLen);
 
 
 protected:
 
     void handleMousePressEvent(LMouseEvent *e) override;
+
+    void handleCloseEvent(LEvent *e) override { exit(0); }
 
 
 private:
