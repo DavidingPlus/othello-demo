@@ -175,6 +175,9 @@ bool OthelloWindow::move(int x, int y)
 
     m_nowPlayer ^= 1;
 
+    m_pMessageWindow->m_HeadLabel->clear();
+    m_pMessageWindow->m_TailLabel->clear();
+
     m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: ") << LString::fromInt(m_head.size()));
 
     m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: ") << LString::fromInt(m_tail.size()));
@@ -197,6 +200,9 @@ void OthelloWindow::init()
         m_nowPlayer = true;
 
         // 重置消息窗口
+        m_pMessageWindow->m_HeadLabel->clear();
+        m_pMessageWindow->m_TailLabel->clear();
+
         m_pMessageWindow->init();
     }
 
