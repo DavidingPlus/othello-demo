@@ -1,14 +1,19 @@
 #include "othellowindow.h"
 
+#include "messagewindow.h"
+
 #include "llog.h"
+#include "lstring.h"
 
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 
 
-OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
+OthelloWindow::OthelloWindow(int sideLen, MessageWindow *pMessageWindow) : LDrawWindow(sideLen, sideLen)
 {
     LDrawWindow::setTitle("黑白棋");
+
+    m_pMessageWindow = pMessageWindow;
 
     init();
 }
@@ -169,6 +174,12 @@ bool OthelloWindow::move(int x, int y)
     }
 
     m_nowPlayer ^= 1;
+
+    m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: ") << LString::fromInt(m_head.size()));
+    m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: ") << LString::fromInt(m_tail.size()));
+
+    m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
+    m_pMessageWindow->m_whoseRoundMiddleLabel->setText(m_nowPlayer ? LString("红") : LString("蓝"));
 
     return true;
 }

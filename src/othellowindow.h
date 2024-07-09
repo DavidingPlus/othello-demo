@@ -17,12 +17,9 @@ class MessageWindow;
 class OthelloWindow : public LDrawWindow
 {
 
-    friend class MessageWindow;
-
-
 public:
 
-    OthelloWindow(int sideLen);
+    OthelloWindow(int sideLen, MessageWindow *pMessageWindow);
 
 
 protected:
@@ -61,6 +58,8 @@ private:
     bool m_nowPlayer = true;
 
     bool m_isGameOver = false;
+
+    MessageWindow *m_pMessageWindow = nullptr;
 };
 
 

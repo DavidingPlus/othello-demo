@@ -8,8 +8,8 @@ int main()
 {
     LWindowApplication app;
 
-    OthelloWindow ow(640);
-    MessageWindow mw(&ow);
+    MessageWindow mw;
+    OthelloWindow ow(640, &mw);
 
     ow.show();
 

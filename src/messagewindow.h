@@ -3,6 +3,7 @@
 
 #include "lwindow.h"
 #include "levent.h"
+#include "llabel.h"
 
 
 class OthelloWindow;
@@ -11,9 +12,12 @@ class OthelloWindow;
 class MessageWindow : public LWindow
 {
 
+    friend class OthelloWindow;
+
+
 public:
 
-    MessageWindow(OthelloWindow *pOthelloWindow);
+    MessageWindow();
 
 
 protected:
@@ -23,7 +27,15 @@ protected:
 
 private:
 
-    OthelloWindow *m_pOthelloWindow = nullptr;
+    LLabel *m_HeadLabel = nullptr;
+
+    LLabel *m_TailLabel = nullptr;
+
+    LLabel *m_whoseRoundLeftLabel = nullptr;
+
+    LLabel *m_whoseRoundMiddleLabel = nullptr;
+
+    LLabel *m_whoseRoundRightLabel = nullptr;
 };
 
 
