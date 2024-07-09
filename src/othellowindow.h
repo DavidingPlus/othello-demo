@@ -6,6 +6,7 @@
 #include "lmouseevent.h"
 #include "lpair.h"
 #include "lset.h"
+#include "lhash.h"
 
 #include "mycircle.h"
 
@@ -39,7 +40,7 @@ private:
 
     LSet<int> m_tail;
 
-    LVector<LPair<int, int>> m_target;
+    LHash<int, LVector<int>> m_target;
 
     bool m_nowPlayer = true;
 };

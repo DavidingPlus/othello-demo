@@ -93,18 +93,31 @@ void OthelloWindow::scan()
             // 要想正确吃到棋子，至少要走两步，保证中间至少有一颗对方的棋
             if (step > 1 && x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::unActivated == m_data[convertToIndex(x, y)].state())
             {
-                m_target.append(LPair<int, int>(convertToIndex(x, y), e));
+                if (m_target.contains(convertToIndex(x, y)))
+                {
+                    m_target[convertToIndex(x, y)].append(e);
+                }
+                else
+                {
+                    m_target.insert(convertToIndex(x, y), LVector<int>({e}));
+                }
             }
         }
     }
 
     // TODO just for test
-    for (auto &e : m_target)
+    for (auto it = m_target.begin(); it != m_target.end(); ++it)
     {
-        auto target = convertToPair(e.first());
-        auto source = convertToPair(e.second());
+        auto target = convertToPair(it.key());
+        std::cout << '(' << target.first() << ", " << target.second() << ") : ";
 
-        std::cout << '(' << target.first() << ", " << target.second() << ") ";
-        std::cout << '(' << source.first() << ", " << source.second() << ')' << std::endl;
+
+        for (auto &e : it.value())
+        {
+            auto source = convertToPair(e);
+            std::cout << '(' << source.first() << ", " << source.second() << ") ";
+        }
+
+        std::cout << std::endl;
     }
 }
