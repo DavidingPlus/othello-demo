@@ -46,6 +46,8 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
     }
 
     scan();
+
+    std::cout << "now is red's turn" << std::endl;
 }
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
@@ -61,6 +63,8 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
         if (res)
         {
+            std::cout << (m_nowPlayer ? "now is red's turn" : "now is blue's turn") << std::endl;
+
             scan();
 
             repaint();
@@ -92,7 +96,7 @@ void OthelloWindow::scan()
 
                 ++step;
 
-            } while (x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::Tail == m_data[convertToIndex(x, y)].state());
+            } while (x >= 0 && x < 8 && y >= 0 && y < 8 && (m_nowPlayer ? MyCircle::PieceState::Tail : MyCircle::PieceState::Head) == m_data[convertToIndex(x, y)].state());
 
             // 要想正确吃到棋子，至少要走两步，保证中间至少有一颗对方的棋
             if (step > 1 && x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::UnActivated == m_data[convertToIndex(x, y)].state())
@@ -108,71 +112,53 @@ void OthelloWindow::scan()
             }
         }
     }
-
-    // TODO just for test
-    for (auto it = m_target.begin(); it != m_target.end(); ++it)
-    {
-        auto target = convertToPair(it.key());
-        std::cout << "target :(" << target.first() << ", " << target.second() << ") from : ";
-
-
-        for (auto &e : it.value())
-        {
-            auto source = convertToPair(e);
-            std::cout << '(' << source.first() << ", " << source.second() << ") ";
-        }
-
-        std::cout << std::endl;
-    }
 }
 
 bool OthelloWindow::OthelloMove(int x, int y)
 {
     int index = convertToIndex(x, y);
-    LVector<int> &sources = m_target[index];
 
-    if (!sources.isEmpty())
-    {
-        for (int i = 0; i < sources.size(); i++)
-        {
-
-            LPair<int, int> sourcePos = convertToPair(sources[i]);
-            int nowX = sourcePos.first();
-            int nowY = sourcePos.second();
-            int nowIndex = convertToIndex(nowX, nowY);
-
-            int directionX = (x - sourcePos.first() > 0 ? 1 : (x - sourcePos.first() < 0 ? -1 : 0));
-            int directionY = (y - sourcePos.second() > 0 ? 1 : (y - sourcePos.second() < 0 ? -1 : 0));
-            do
-            {
-                nowX += directionX;
-                nowY += directionY;
-                nowIndex = convertToIndex(nowX, nowY);
-
-                std::cout << nowIndex << std::endl;
-
-                m_data[nowIndex].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
-                m_data[nowIndex].paint(m_pDrawContext);
-
-                if (m_nowPlayer)
-                {
-                    m_head.insert(nowIndex);
-                    m_tail.remove(nowIndex);
-                }
-                else
-                {
-                    m_tail.insert(nowIndex);
-                    m_head.remove(nowIndex);
-                }
-            } while (nowIndex != index);
-        }
-
-        m_nowPlayer ^= 1;
-
-        return true;
-    }
-    else
+    if (!m_target.contains(index))
     {
         return false;
     }
+
+    LVector<int> sources = m_target[index];
+
+    for (int i = 0; i < sources.size(); i++)
+    {
+        LPair<int, int> sourcePos = convertToPair(sources[i]);
+
+        int directionX = (x - sourcePos.first() > 0 ? 1 : (x - sourcePos.first() < 0 ? -1 : 0));
+        int directionY = (y - sourcePos.second() > 0 ? 1 : (y - sourcePos.second() < 0 ? -1 : 0));
+
+        int nowX = sourcePos.first();
+        int nowY = sourcePos.second();
+        int nowIndex = convertToIndex(nowX, nowY);
+
+        do
+        {
+            nowX += directionX;
+            nowY += directionY;
+            nowIndex = convertToIndex(nowX, nowY);
+
+            m_data[nowIndex].setState((m_nowPlayer ? MyCircle::PieceState::Head : MyCircle::PieceState::Tail));
+            m_data[nowIndex].paint(m_pDrawContext);
+
+            if (m_nowPlayer)
+            {
+                m_head.insert(nowIndex);
+                m_tail.remove(nowIndex);
+            }
+            else
+            {
+                m_tail.insert(nowIndex);
+                m_head.remove(nowIndex);
+            }
+        } while (nowIndex != index);
+    }
+
+    m_nowPlayer ^= 1;
+
+    return true;
 }
