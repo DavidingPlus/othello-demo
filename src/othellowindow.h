@@ -26,7 +26,7 @@ private:
 
     LVector<MyCircle> m_data;
 
-    // void OthelloMove(int xIndex, int yIndex);
+    // LVector<int> canAct;
 
     bool OthelloMove(int xIndex, int yIndex);
 };
