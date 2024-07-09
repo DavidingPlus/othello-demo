@@ -14,6 +14,7 @@ public:
     enum PieceState
     {
         UnActivated = 0, ///< 未激活
+        ReadyToActivate, ///< 在当前的棋盘的状态下可以被激活
         Head,            ///< 正面
         Tail             ///< 反面
     };

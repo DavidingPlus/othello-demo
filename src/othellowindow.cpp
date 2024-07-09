@@ -74,6 +74,16 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
 void OthelloWindow::scan()
 {
+    // 清理之前的指示点
+    for (auto it = m_target.begin(); it != m_target.end(); ++it)
+    {
+        if (MyCircle::PieceState::ReadyToActivate == m_data[it.key()].state())
+        {
+            m_data[it.key()].setState(MyCircle::PieceState::UnActivated);
+            m_data[it.key()].paint(m_pDrawContext);
+        }
+    }
+
     m_target.clear();
 
     auto &player = m_nowPlayer ? m_head : m_tail;
@@ -101,6 +111,9 @@ void OthelloWindow::scan()
             // 要想正确吃到棋子，至少要走两步，保证中间至少有一颗对方的棋
             if (step > 1 && x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::UnActivated == m_data[convertToIndex(x, y)].state())
             {
+                m_data[convertToIndex(x, y)].setState(MyCircle::PieceState::ReadyToActivate);
+                m_data[convertToIndex(x, y)].paint(m_pDrawContext);
+
                 if (m_target.contains(convertToIndex(x, y)))
                 {
                     m_target[convertToIndex(x, y)].append(e);
