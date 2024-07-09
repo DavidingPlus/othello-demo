@@ -57,8 +57,6 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
                 }
             }
 
-            LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
-
             LDrawWindow::repaint();
             AIMove();
         }
@@ -203,7 +201,13 @@ void OthelloWindow::init()
         m_pMessageWindow->m_HeadLabel->clear();
         m_pMessageWindow->m_TailLabel->clear();
 
-        m_pMessageWindow->init();
+        m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: 2"));
+
+        m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: 2"));
+        m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
+
+        m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
+        m_pMessageWindow->m_whoseRoundMiddleLabel->setText(LString("红"));
     }
 
     int sideLen = LDrawWindow::width();
@@ -248,8 +252,6 @@ void OthelloWindow::init()
 
     scan();
 
-    LLog::log() << "now is red's turn";
-
     if (m_isGameOver)
     {
         m_isGameOver = false;
@@ -281,8 +283,6 @@ void OthelloWindow::AIMove()
                 return;
             }
         }
-
-        LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
 
         LDrawWindow::repaint();
     }
