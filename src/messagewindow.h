@@ -27,6 +27,8 @@ protected:
 
 private:
 
+    void init();
+
     LLabel *m_HeadLabel = nullptr;
 
     LLabel *m_TailLabel = nullptr;

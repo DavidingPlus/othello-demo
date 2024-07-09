@@ -176,7 +176,9 @@ bool OthelloWindow::move(int x, int y)
     m_nowPlayer ^= 1;
 
     m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: ") << LString::fromInt(m_head.size()));
+
     m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: ") << LString::fromInt(m_tail.size()));
+    m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
 
     m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
     m_pMessageWindow->m_whoseRoundMiddleLabel->setText(m_nowPlayer ? LString("红") : LString("蓝"));
@@ -193,6 +195,9 @@ void OthelloWindow::init()
         m_tail.clear();
         m_target.clear();
         m_nowPlayer = true;
+
+        // 重置消息窗口
+        m_pMessageWindow->init();
     }
 
     int sideLen = LDrawWindow::width();
@@ -242,6 +247,7 @@ void OthelloWindow::init()
     if (m_isGameOver)
     {
         m_isGameOver = false;
+
         LDrawWindow::repaint();
     }
 }

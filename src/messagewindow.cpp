@@ -12,6 +12,11 @@ MessageWindow::MessageWindow() : LWindow(450, 100)
 {
     LWindow::setTitle("消息窗口");
 
+    init();
+}
+
+void MessageWindow::init()
+{
     m_HeadLabel = new LLabel(LString("红方棋子数: 2"), LWindow::rootComponent());
     m_HeadLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
     m_HeadLabel->setFont(LFont(25));
