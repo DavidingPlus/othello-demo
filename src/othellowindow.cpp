@@ -37,6 +37,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
             if (m_target.empty())
             {
                 m_nowPlayer ^= 1;
+                AIMove();
                 scan();
 
                 if (m_target.empty())
@@ -54,10 +55,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
             LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
 
             LDrawWindow::repaint();
-            sleep(1);
             AIMove();
-            scan();
-            LDrawWindow::repaint();
         }
     }
 }
@@ -240,9 +238,30 @@ void OthelloWindow::init()
 void OthelloWindow::AIMove()
 {
     int index = AIStrategy();
-    if (index)
+    if (index != -1)
     {
         move(index % 8, index / 8);
+        scan();
+        if (m_target.empty())
+        {
+            m_nowPlayer ^= 1;
+            scan();
+
+            if (m_target.empty())
+            {
+                m_isGameOver = true;
+
+                LLog::log() << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!");
+
+                LDrawWindow::repaint();
+
+                return;
+            }
+        }
+
+        LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
+
+        LDrawWindow::repaint();
     }
 }
 
@@ -252,5 +271,5 @@ int OthelloWindow::AIStrategy()
     {
         return m_target.begin().key();
     }
-    return 0;
+    return -1;
 }
