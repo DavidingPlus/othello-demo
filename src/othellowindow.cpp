@@ -1,65 +1,28 @@
 #include "othellowindow.h"
 
+#include "llog.h"
+
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 
-
-OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen)
-{
-    // 填充背景为白色
-    m_pDrawContext->setBrushColor(LColor(0xffffff));
-    m_pDrawContext->fillRect(LRect(0, 0, sideLen, sideLen));
-
-    int sectionLen = sideLen / 8;
-
-    // 初始化所有棋子的数据
-    m_data.reserve(64);
-    for (int i = 0; i < 64; ++i)
-    {
-        auto pos = convertToPair(i);
-
-        m_data.append(MyCircle(pos.first() * sectionLen + sectionLen / 2, pos.second() * sectionLen + sectionLen / 2, sectionLen / 2 - 10));
-    }
-
-    m_data[27].setState(MyCircle::PieceState::Tail);
-    m_data[27].paint(m_pDrawContext);
-    m_tail.insert(27);
-
-    m_data[28].setState(MyCircle::PieceState::Head);
-    m_data[28].paint(m_pDrawContext);
-    m_head.insert(28);
-
-    m_data[35].setState(MyCircle::PieceState::Head);
-    m_data[35].paint(m_pDrawContext);
-    m_head.insert(35);
-
-    m_data[36].setState(MyCircle::PieceState::Tail);
-    m_data[36].paint(m_pDrawContext);
-    m_tail.insert(36);
-
-    // 画棋盘的分割线
-    m_pDrawContext->setPenColor(LColor(0x000000));
-    for (int i = 1; i < 8; ++i)
-    {
-        m_pDrawContext->drawLine(0, i * sectionLen, sideLen, i * sectionLen);
-        m_pDrawContext->drawLine(i * sectionLen, 0, i * sectionLen, sideLen);
-    }
-
-    scan();
-
-    std::cout << "now is red's turn" << std::endl;
-}
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
+        if (m_isGameOver)
+        {
+            init();
+
+            return;
+        }
+
         int sectionLen = width() / 8;
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
 
-        bool res = OthelloMove(xIndex, yIndex);
+        bool res = move(xIndex, yIndex);
 
         if (res)
         {
@@ -69,13 +32,20 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
             {
                 m_nowPlayer ^= 1;
                 scan();
+
                 if (m_target.empty())
                 {
-                    std::cout << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!") << std::endl;
+                    m_isGameOver = true;
+
+                    LLog::log() << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!");
+
+                    repaint();
+
+                    return;
                 }
             }
 
-            std::cout << (m_nowPlayer ? "now is red's turn" : "now is blue's turn") << std::endl;
+            LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
 
             repaint();
         }
@@ -146,7 +116,7 @@ void OthelloWindow::scan()
     }
 }
 
-bool OthelloWindow::OthelloMove(int x, int y)
+bool OthelloWindow::move(int x, int y)
 {
     int index = convertToIndex(x, y);
 
@@ -193,4 +163,66 @@ bool OthelloWindow::OthelloMove(int x, int y)
     m_nowPlayer ^= 1;
 
     return true;
+}
+
+void OthelloWindow::init()
+{
+    if (m_isGameOver)
+    {
+        m_data.clear();
+        m_head.clear();
+        m_tail.clear();
+        m_target.clear();
+        m_nowPlayer = true;
+    }
+
+    int sideLen = width();
+    int sectionLen = sideLen / 8;
+
+    // 填充背景为白色
+    m_pDrawContext->setBrushColor(LColor(0xffffff));
+    m_pDrawContext->fillRect(LRect(0, 0, sideLen, sideLen));
+
+    // 初始化所有棋子的数据
+    m_data.reserve(64);
+    for (int i = 0; i < 64; ++i)
+    {
+        auto pos = convertToPair(i);
+
+        m_data.append(MyCircle(pos.first() * sectionLen + sectionLen / 2, pos.second() * sectionLen + sectionLen / 2, sectionLen / 2 - 10));
+    }
+
+    m_data[27].setState(MyCircle::PieceState::Tail);
+    m_data[27].paint(m_pDrawContext);
+    m_tail.insert(27);
+
+    m_data[28].setState(MyCircle::PieceState::Head);
+    m_data[28].paint(m_pDrawContext);
+    m_head.insert(28);
+
+    m_data[35].setState(MyCircle::PieceState::Head);
+    m_data[35].paint(m_pDrawContext);
+    m_head.insert(35);
+
+    m_data[36].setState(MyCircle::PieceState::Tail);
+    m_data[36].paint(m_pDrawContext);
+    m_tail.insert(36);
+
+    // 画棋盘的分割线
+    m_pDrawContext->setPenColor(LColor(0x000000));
+    for (int i = 1; i < 8; ++i)
+    {
+        m_pDrawContext->drawLine(0, i * sectionLen, sideLen, i * sectionLen);
+        m_pDrawContext->drawLine(i * sectionLen, 0, i * sectionLen, sideLen);
+    }
+
+    scan();
+
+    LLog::log() << "now is red's turn";
+
+    if (m_isGameOver)
+    {
+        m_isGameOver = false;
+        repaint();
+    }
 }

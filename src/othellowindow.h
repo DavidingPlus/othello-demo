@@ -16,7 +16,7 @@ class OthelloWindow : public LDrawWindow
 
 public:
 
-    OthelloWindow(int sideLen);
+    OthelloWindow(int sideLen) : LDrawWindow(sideLen, sideLen) { init(); }
 
 
 protected:
@@ -28,7 +28,9 @@ private:
 
     void scan();
 
-    bool OthelloMove(int x, int y);
+    bool move(int x, int y);
+
+    void init();
 
     static LPair<int, int> convertToPair(int index) { return LPair<int, int>(index % 8, index / 8); }
 
@@ -45,6 +47,8 @@ private:
     LHash<int, LVector<int>> m_target;
 
     bool m_nowPlayer = true;
+
+    bool m_isGameOver = false;
 };
 
 
