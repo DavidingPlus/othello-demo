@@ -38,6 +38,10 @@ private:
 
     bool move(int x, int y);
 
+    void AIMove();
+
+    int AIStrategy();
+
     void init();
 
     static LPair<int, int> convertToPair(int index) { return LPair<int, int>(index % 8, index / 8); }

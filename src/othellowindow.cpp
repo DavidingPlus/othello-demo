@@ -34,7 +34,6 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
         if (res)
         {
             scan();
-
             if (m_target.empty())
             {
                 m_nowPlayer ^= 1;
@@ -54,7 +53,11 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
             LLog::log() << (m_nowPlayer ? "now is red's turn" : "now is blue's turn");
 
-            LDrawWindow::repaint();
+            repaint();
+            sleep(1);
+            AIMove();
+            scan();
+            repaint();
         }
     }
 }
@@ -232,4 +235,23 @@ void OthelloWindow::init()
         m_isGameOver = false;
         LDrawWindow::repaint();
     }
+}
+
+void OthelloWindow::AIMove()
+{
+    int index = AIStrategy();
+    if (index)
+    {
+        move(index % 8, index / 8);
+    }
+}
+
+
+int OthelloWindow::AIStrategy()
+{
+    if (!m_target.empty())
+    {
+        return m_target.begin().key();
+    }
+    return 0;
 }
