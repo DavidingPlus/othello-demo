@@ -56,11 +56,13 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
-        if (OthelloMove(xIndex, yIndex))
+
+        bool res = OthelloMove(xIndex, yIndex);
+
+        if (res)
         {
-            m_data[convertToIndex(xIndex, yIndex)].setState((m_nowPlayer ? MyCircle::PieceState::Tail : MyCircle::PieceState::Head));
-            m_data[convertToIndex(xIndex, yIndex)].paint(m_pDrawContext);
             scan();
+
             repaint();
         }
     }
@@ -111,7 +113,7 @@ void OthelloWindow::scan()
     for (auto it = m_target.begin(); it != m_target.end(); ++it)
     {
         auto target = convertToPair(it.key());
-        std::cout << "from :(" << target.first() << ", " << target.second() << ") to : ";
+        std::cout << "target :(" << target.first() << ", " << target.second() << ") from : ";
 
 
         for (auto &e : it.value())
@@ -127,48 +129,50 @@ void OthelloWindow::scan()
 bool OthelloWindow::OthelloMove(int x, int y)
 {
     int index = convertToIndex(x, y);
-    bool res = false;
-    for (auto it = m_target.begin(); it != m_target.end(); ++it)
+    LVector<int> &sources = m_target[index];
+
+    if (!sources.isEmpty())
     {
-        int target = it.key();
-        if (index == target)
+        for (int i = 0; i < sources.size(); i++)
         {
-            LVector<int> &sources = it.value();
-            for (int i = 0; i < sources.size(); i++)
+
+            LPair<int, int> sourcePos = convertToPair(sources[i]);
+            int nowX = sourcePos.first();
+            int nowY = sourcePos.second();
+            int nowIndex = convertToIndex(nowX, nowY);
+
+            int directionX = (x - sourcePos.first() > 0 ? 1 : (x - sourcePos.first() < 0 ? -1 : 0));
+            int directionY = (y - sourcePos.second() > 0 ? 1 : (y - sourcePos.second() < 0 ? -1 : 0));
+            do
             {
-                int nowX = x;
-                int nowY = y;
-                int nowIndex = convertToIndex(nowX, nowY);
-                LPair<int, int> sourcePos = convertToPair(sources[i]);
-                int directionX = (sourcePos.first() - x > 0 ? 1 : (sourcePos.first() - x < 0 ? -1 : 0));
-                int directionY = (sourcePos.second() - y > 0 ? 1 : (sourcePos.second() - y < 0 ? -1 : 0));
-                do
+                nowX += directionX;
+                nowY += directionY;
+                nowIndex = convertToIndex(nowX, nowY);
+
+                std::cout << nowIndex << std::endl;
+
+                m_data[nowIndex].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
+                m_data[nowIndex].paint(m_pDrawContext);
+
+                if (m_nowPlayer)
                 {
-                    nowX += directionX;
-                    nowY += directionY;
-                    nowIndex = convertToIndex(nowX, nowY);
-                    m_data[nowIndex].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
-                    m_data[nowIndex].paint(m_pDrawContext);
-                    if (m_nowPlayer)
-                    {
-                        m_head.insert(nowIndex);
-                        m_tail.remove(nowIndex);
-                    }
-                    else
-                    {
-                        m_tail.insert(nowIndex);
-                        m_head.remove(nowIndex);
-                    }
-                } while (nowIndex != sources[i]);
-                // m_data[sources[i]].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
-                // m_data[sources[i]].paint(m_pDrawContext);
-            }
-            res = true;
+                    m_head.insert(nowIndex);
+                    m_tail.remove(nowIndex);
+                }
+                else
+                {
+                    m_tail.insert(nowIndex);
+                    m_head.remove(nowIndex);
+                }
+            } while (nowIndex != index);
         }
-    }
-    if (res)
-    {
+
         m_nowPlayer ^= 1;
+
+        return true;
     }
-    return res;
+    else
+    {
+        return false;
+    }
 }
