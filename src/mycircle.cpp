@@ -5,7 +5,7 @@ void MyCircle::paint(LDrawContext *dc)
 {
     switch (m_state)
     {
-        case PieceState::unActivated:
+        case PieceState::UnActivated:
             break;
         case PieceState::Head:
         {

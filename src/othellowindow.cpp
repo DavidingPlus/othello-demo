@@ -91,7 +91,7 @@ void OthelloWindow::scan()
             } while (x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::Tail == m_data[convertToIndex(x, y)].state());
 
             // 要想正确吃到棋子，至少要走两步，保证中间至少有一颗对方的棋
-            if (step > 1 && x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::unActivated == m_data[convertToIndex(x, y)].state())
+            if (step > 1 && x >= 0 && x < 8 && y >= 0 && y < 8 && MyCircle::PieceState::UnActivated == m_data[convertToIndex(x, y)].state())
             {
                 if (m_target.contains(convertToIndex(x, y)))
                 {
