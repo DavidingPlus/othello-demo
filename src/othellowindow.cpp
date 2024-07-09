@@ -63,9 +63,19 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
         if (res)
         {
-            std::cout << (m_nowPlayer ? "now is red's turn" : "now is blue's turn") << std::endl;
-
             scan();
+
+            if (m_target.empty())
+            {
+                m_nowPlayer ^= 1;
+                scan();
+                if (m_target.empty())
+                {
+                    std::cout << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!") << std::endl;
+                }
+            }
+
+            std::cout << (m_nowPlayer ? "now is red's turn" : "now is blue's turn") << std::endl;
 
             repaint();
         }
