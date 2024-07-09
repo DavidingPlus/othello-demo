@@ -274,7 +274,7 @@ void OthelloWindow::AIMove()
             {
                 m_isGameOver = true;
 
-                LLog::log() << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!");
+                LLog::log() << ((m_head.size() == m_tail.size()) ? "DRAW!" : ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!"));
 
                 LDrawWindow::repaint();
 
