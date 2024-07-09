@@ -56,11 +56,13 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
-
-        m_data[convertToIndex(xIndex, yIndex)].setState(m_data[8 * yIndex + xIndex].state() == MyCircle::PieceState::Head ? MyCircle::PieceState::Tail : MyCircle::PieceState::Head);
-        m_data[convertToIndex(xIndex, yIndex)].paint(m_pDrawContext);
-
-        repaint();
+        if (OthelloMove(xIndex, yIndex))
+        {
+            m_data[convertToIndex(xIndex, yIndex)].setState((m_nowPlayer ? MyCircle::PieceState::Tail : MyCircle::PieceState::Head));
+            m_data[convertToIndex(xIndex, yIndex)].paint(m_pDrawContext);
+            scan();
+            repaint();
+        }
     }
 }
 
@@ -109,7 +111,7 @@ void OthelloWindow::scan()
     for (auto it = m_target.begin(); it != m_target.end(); ++it)
     {
         auto target = convertToPair(it.key());
-        std::cout << '(' << target.first() << ", " << target.second() << ") : ";
+        std::cout << "from :(" << target.first() << ", " << target.second() << ") to : ";
 
 
         for (auto &e : it.value())
@@ -120,4 +122,53 @@ void OthelloWindow::scan()
 
         std::cout << std::endl;
     }
+}
+
+bool OthelloWindow::OthelloMove(int x, int y)
+{
+    int index = convertToIndex(x, y);
+    bool res = false;
+    for (auto it = m_target.begin(); it != m_target.end(); ++it)
+    {
+        int target = it.key();
+        if (index == target)
+        {
+            LVector<int> &sources = it.value();
+            for (int i = 0; i < sources.size(); i++)
+            {
+                int nowX = x;
+                int nowY = y;
+                int nowIndex = convertToIndex(nowX, nowY);
+                LPair<int, int> sourcePos = convertToPair(sources[i]);
+                int directionX = (sourcePos.first() - x > 0 ? 1 : (sourcePos.first() - x < 0 ? -1 : 0));
+                int directionY = (sourcePos.second() - y > 0 ? 1 : (sourcePos.second() - y < 0 ? -1 : 0));
+                do
+                {
+                    nowX += directionX;
+                    nowY += directionY;
+                    nowIndex = convertToIndex(nowX, nowY);
+                    m_data[nowIndex].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
+                    m_data[nowIndex].paint(m_pDrawContext);
+                    if (m_nowPlayer)
+                    {
+                        m_head.insert(nowIndex);
+                        m_tail.remove(nowIndex);
+                    }
+                    else
+                    {
+                        m_tail.insert(nowIndex);
+                        m_head.remove(nowIndex);
+                    }
+                } while (nowIndex != sources[i]);
+                // m_data[sources[i]].setState((m_nowPlayer ? MyCircle::Head : MyCircle::Tail));
+                // m_data[sources[i]].paint(m_pDrawContext);
+            }
+            res = true;
+        }
+    }
+    if (res)
+    {
+        m_nowPlayer ^= 1;
+    }
+    return res;
 }

@@ -28,6 +28,8 @@ private:
 
     void scan();
 
+    bool OthelloMove(int x,int y);
+
     static LPair<int, int> convertToPair(int index) { return LPair<int, int>(index % 8, index / 8); }
 
     static int convertToIndex(int x, int y) { return 8 * y + x; }
