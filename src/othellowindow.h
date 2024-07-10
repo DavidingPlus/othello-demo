@@ -12,7 +12,7 @@
 
 
 class MessageWindow;
-
+class LTimer;
 
 class OthelloWindow : public LDrawWindow
 {
@@ -41,6 +41,8 @@ private:
 
     int AIStrategy();
 
+    void timeOutSlot();
+
     static LPair<int, int> convertToPair(int index) { return LPair<int, int>(index % 8, index / 8); }
 
     static int convertToIndex(int x, int y) { return 8 * y + x; }
@@ -60,6 +62,8 @@ private:
     bool m_isGameOver = false;
 
     MessageWindow *m_pMessageWindow = nullptr;
+
+    LTimer *m_pAITimer = nullptr;
 };
 
 

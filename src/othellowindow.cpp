@@ -4,6 +4,12 @@
 
 #include "llog.h"
 #include "lstring.h"
+#include "ltimer.h"
+
+namespace
+{
+    bool isAIMoving = false;
+} // namespace
 
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
@@ -15,11 +21,18 @@ OthelloWindow::OthelloWindow(int sideLen, MessageWindow *pMessageWindow) : LDraw
 
     m_pMessageWindow = pMessageWindow;
 
+    m_pAITimer = new LTimer(this);
+    m_pAITimer->timeoutSignal.connect(this, &OthelloWindow::timeOutSlot);
     init();
 }
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
+    LLog::log() << (isAIMoving ? "TRUE" : "FALSE");
+    if (isAIMoving)
+    {
+        return;
+    }
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
         if (m_isGameOver)
@@ -262,6 +275,22 @@ void OthelloWindow::init()
 
 void OthelloWindow::AIMove()
 {
+    isAIMoving = true;
+    m_pAITimer->start(3000);
+}
+
+int OthelloWindow::AIStrategy()
+{
+    if (!m_target.empty())
+    {
+        return m_target.begin().key();
+    }
+    return -1;
+}
+
+void OthelloWindow::timeOutSlot()
+{
+    isAIMoving = false;
     int index = AIStrategy();
     if (index != -1)
     {
@@ -286,13 +315,4 @@ void OthelloWindow::AIMove()
 
         LDrawWindow::repaint();
     }
-}
-
-int OthelloWindow::AIStrategy()
-{
-    if (!m_target.empty())
-    {
-        return m_target.begin().key();
-    }
-    return -1;
 }
