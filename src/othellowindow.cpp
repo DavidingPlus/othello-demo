@@ -4,12 +4,6 @@
 
 #include "llog.h"
 #include "lstring.h"
-#include "ltimer.h"
-
-namespace
-{
-    bool isAIMoving = false;
-} // namespace
 
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
@@ -28,7 +22,6 @@ OthelloWindow::OthelloWindow(int sideLen, MessageWindow *pMessageWindow) : LDraw
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
-    LLog::log() << (isAIMoving ? "TRUE" : "FALSE");
     if (isAIMoving)
     {
         return;
@@ -62,7 +55,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
                 {
                     m_isGameOver = true;
 
-                    LLog::log() << ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!");
+                    LLog::log() << ((m_head.size() == m_tail.size()) ? "DRAW!" : ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!"));
 
                     LDrawWindow::repaint();
 
@@ -189,13 +182,13 @@ bool OthelloWindow::move(int x, int y)
     m_pMessageWindow->m_HeadLabel->clear();
     m_pMessageWindow->m_TailLabel->clear();
 
-    m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: ") << LString::fromInt(m_head.size()));
+    m_pMessageWindow->m_HeadLabel->setText(LString("您的棋子数: ") << LString::fromInt(m_head.size()));
 
-    m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: ") << LString::fromInt(m_tail.size()));
+    m_pMessageWindow->m_TailLabel->setText(LString("电脑棋子数: ") << LString::fromInt(m_tail.size()));
     m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
 
     m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
-    m_pMessageWindow->m_whoseRoundMiddleLabel->setText(m_nowPlayer ? LString("红") : LString("蓝"));
+    m_pMessageWindow->m_whoseRoundMiddleLabel->setText(m_nowPlayer ? LString("您的") : LString("电脑"));
 
     return true;
 }
@@ -214,13 +207,13 @@ void OthelloWindow::init()
         m_pMessageWindow->m_HeadLabel->clear();
         m_pMessageWindow->m_TailLabel->clear();
 
-        m_pMessageWindow->m_HeadLabel->setText(LString("红方棋子数: 2"));
+        m_pMessageWindow->m_HeadLabel->setText(LString("您的棋子数: 2"));
 
-        m_pMessageWindow->m_TailLabel->setText(LString("蓝方棋子数: 2"));
+        m_pMessageWindow->m_TailLabel->setText(LString("电脑棋子数: 2"));
         m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
 
         m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
-        m_pMessageWindow->m_whoseRoundMiddleLabel->setText(LString("红"));
+        m_pMessageWindow->m_whoseRoundMiddleLabel->setText(LString("您的"));
     }
 
     int sideLen = LDrawWindow::width();
@@ -291,6 +284,7 @@ int OthelloWindow::AIStrategy()
 void OthelloWindow::timeOutSlot()
 {
     isAIMoving = false;
+
     int index = AIStrategy();
     if (index != -1)
     {

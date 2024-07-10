@@ -7,12 +7,13 @@
 #include "lpair.h"
 #include "lset.h"
 #include "lhash.h"
+#include "ltimer.h"
 
 #include "mycircle.h"
 
 
 class MessageWindow;
-class LTimer;
+
 
 class OthelloWindow : public LDrawWindow
 {
@@ -65,6 +66,8 @@ private:
     MessageWindow *m_pMessageWindow = nullptr;
 
     LTimer *m_pAITimer = nullptr;
+
+    bool isAIMoving = false;
 };
 
 

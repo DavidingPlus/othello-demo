@@ -12,11 +12,11 @@ MessageWindow::MessageWindow() : LWindow(450, 100)
 {
     LWindow::setTitle("消息窗口");
 
-    m_HeadLabel = new LLabel(LString("红方棋子数: 2"), LWindow::rootComponent());
+    m_HeadLabel = new LLabel(LString("您的棋子数: 2"), LWindow::rootComponent());
     m_HeadLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
     m_HeadLabel->setFont(LFont(25));
 
-    m_TailLabel = new LLabel(LString("蓝方棋子数: 2"), LWindow::rootComponent());
+    m_TailLabel = new LLabel(LString("电脑棋子数: 2"), LWindow::rootComponent());
     m_TailLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0x0000ff));
     m_TailLabel->setFont(LFont(25));
     m_TailLabel->setX(LWindow::width() - m_TailLabel->width());
@@ -25,12 +25,12 @@ MessageWindow::MessageWindow() : LWindow(450, 100)
     m_whoseRoundLeftLabel->setFont(LFont(25));
     m_whoseRoundLeftLabel->setY(LWindow::height() - m_whoseRoundLeftLabel->height());
 
-    m_whoseRoundMiddleLabel = new LLabel(LString("红"), LWindow::rootComponent());
+    m_whoseRoundMiddleLabel = new LLabel(LString("您的"), LWindow::rootComponent());
     m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
     m_whoseRoundMiddleLabel->setFont(LFont(25));
     m_whoseRoundMiddleLabel->setY(LWindow::height() - m_whoseRoundMiddleLabel->height());
 
-    m_whoseRoundRightLabel = new LLabel(LString("方回合"), LWindow::rootComponent());
+    m_whoseRoundRightLabel = new LLabel(LString("回合"), LWindow::rootComponent());
     m_whoseRoundRightLabel->setFont(LFont(25));
     m_whoseRoundRightLabel->setY(LWindow::height() - m_whoseRoundRightLabel->height());
 
