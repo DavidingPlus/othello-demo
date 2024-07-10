@@ -1,7 +1,5 @@
 #include "messagewindow.h"
 
-#include "othellowindow.h"
-
 #include "lstring.h"
 #include "lfont.h"
 #include "lpalette.h"

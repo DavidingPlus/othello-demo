@@ -15,26 +15,23 @@ OthelloWindow::OthelloWindow(int sideLen, MessageWindow *pMessageWindow) : LDraw
 
     m_pMessageWindow = pMessageWindow;
 
+    m_pGameOverWindow = new GameOverWindow(this);
+
     m_pAITimer = new LTimer(this);
     m_pAITimer->timeoutSignal.connect(this, &OthelloWindow::timeOutSlot);
+
     init();
 }
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
-    if (isAIMoving)
+    if (isAIMoving || m_isGameOver)
     {
         return;
     }
+
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
-        if (m_isGameOver)
-        {
-            init();
-
-            return;
-        }
-
         int sectionLen = LDrawWindow::width() / 8;
 
         int xIndex = e->x() / sectionLen;
@@ -55,9 +52,24 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
                 {
                     m_isGameOver = true;
 
-                    LLog::log() << ((m_head.size() == m_tail.size()) ? "DRAW!" : ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!"));
-
                     LDrawWindow::repaint();
+
+                    if (m_head.size() == m_tail.size())
+                    {
+                        m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
+                    }
+                    else if (m_head.size() > m_tail.size())
+                    {
+                        m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
+                    }
+                    else
+                    {
+                        m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
+                    }
+
+                    m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
+
+                    m_pGameOverWindow->show();
 
                     return;
                 }
@@ -232,6 +244,7 @@ void OthelloWindow::init()
         m_data.append(MyCircle(pos.first() * sectionLen + sectionLen / 2, pos.second() * sectionLen + sectionLen / 2, sectionLen / 2 - 10));
     }
 
+    // TODO 初始数据，可根据自己喜好修改
     m_data[27].setState(MyCircle::PieceState::Tail);
     m_data[27].paint(m_pDrawContext);
     m_tail.insert(27);
@@ -269,6 +282,7 @@ void OthelloWindow::init()
 void OthelloWindow::AIMove()
 {
     isAIMoving = true;
+
     m_pAITimer->startOnce(1000);
 }
 
@@ -299,9 +313,24 @@ void OthelloWindow::timeOutSlot()
             {
                 m_isGameOver = true;
 
-                LLog::log() << ((m_head.size() == m_tail.size()) ? "DRAW!" : ((m_head.size() > m_tail.size()) ? "RED WIN!" : "BLUE WIN!"));
-
                 LDrawWindow::repaint();
+
+                if (m_head.size() == m_tail.size())
+                {
+                    m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
+                }
+                else if (m_head.size() > m_tail.size())
+                {
+                    m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
+                }
+                else
+                {
+                    m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
+                }
+
+                m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
+
+                m_pGameOverWindow->show();
 
                 return;
             }

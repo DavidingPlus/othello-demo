@@ -10,13 +10,18 @@
 #include "ltimer.h"
 
 #include "mycircle.h"
+#include "gameoverwindow.h"
 
 
 class MessageWindow;
+class GameOverWindow;
 
 
 class OthelloWindow : public LDrawWindow
 {
+
+    friend class GameOverWindow;
+
 
 public:
 
@@ -63,11 +68,13 @@ private:
 
     bool m_isGameOver = false;
 
-    MessageWindow *m_pMessageWindow = nullptr;
-
     LTimer *m_pAITimer = nullptr;
 
     bool isAIMoving = false;
+
+    MessageWindow *m_pMessageWindow = nullptr;
+
+    GameOverWindow *m_pGameOverWindow = nullptr;
 };
 
 
