@@ -39,6 +39,7 @@ private:
 
     void AIMove();
 
+    // TODO 目前的AI只实现了下棋功能本身，没有任何策略
     int AIStrategy();
 
     void timeOutSlot();

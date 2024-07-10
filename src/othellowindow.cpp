@@ -276,7 +276,7 @@ void OthelloWindow::init()
 void OthelloWindow::AIMove()
 {
     isAIMoving = true;
-    m_pAITimer->start(3000);
+    m_pAITimer->startOnce(1000);
 }
 
 int OthelloWindow::AIStrategy()
