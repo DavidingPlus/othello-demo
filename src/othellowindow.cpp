@@ -24,9 +24,10 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 
     m_sideLen = sideLen;
 
-    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 6);
-    m_tailRect = LRect(m_sideLen, m_sideLen / 6, 200, m_sideLen / 6);
-    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 6, 200, m_sideLen / 6);
+    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 4 / 3);
+    m_tailRect = LRect(m_sideLen, m_sideLen / 4 / 3, 200, m_sideLen / 4 / 3);
+    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 4 / 3, 200, m_sideLen / 4 / 3);
+    m_logoRect = LRect(m_sideLen, m_sideLen / 4, 200, m_sideLen / 2);
 
     m_pGameOverWindow = new GameOverWindow(this);
 

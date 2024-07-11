@@ -105,6 +105,8 @@ private:
     LRect m_tailRect;
 
     LRect m_roundRect;
+
+    LRect m_logoRect;
 };
 
 
