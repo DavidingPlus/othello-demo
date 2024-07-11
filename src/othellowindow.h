@@ -8,12 +8,12 @@
 #include "lset.h"
 #include "lhash.h"
 #include "ltimer.h"
+#include "lrect.h"
 
 #include "mycircle.h"
 #include "gameoverwindow.h"
 
 
-class MessageWindow;
 class GameOverWindow;
 
 
@@ -25,7 +25,7 @@ class OthelloWindow : public LDrawWindow
 
 public:
 
-    OthelloWindow(int sideLen, MessageWindow *pMessageWindow);
+    OthelloWindow(int sideLen);
 
 
 protected:
@@ -56,6 +56,10 @@ private:
 
     static const LPair<int, int> directions[8];
 
+    int m_sideLen = 0;
+
+    GameOverWindow *m_pGameOverWindow = nullptr;
+
     LVector<MyCircle> m_data;
 
     LSet<int> m_head;
@@ -72,9 +76,11 @@ private:
 
     bool isAIMoving = false;
 
-    MessageWindow *m_pMessageWindow = nullptr;
+    LRect m_headRect;
 
-    GameOverWindow *m_pGameOverWindow = nullptr;
+    LRect m_tailRect;
+
+    LRect m_roundRect;
 };
 
 

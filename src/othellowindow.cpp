@@ -1,7 +1,5 @@
 #include "othellowindow.h"
 
-#include "messagewindow.h"
-
 #include "llog.h"
 #include "lstring.h"
 
@@ -9,11 +7,15 @@
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 
 
-OthelloWindow::OthelloWindow(int sideLen, MessageWindow *pMessageWindow) : LDrawWindow(sideLen, sideLen)
+OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 {
     LDrawWindow::setTitle("黑白棋");
 
-    m_pMessageWindow = pMessageWindow;
+    m_sideLen = sideLen;
+
+    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 3);
+    m_tailRect = LRect(m_sideLen, m_sideLen / 3, 200, m_sideLen / 3);
+    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 3, 200, m_sideLen / 3);
 
     m_pGameOverWindow = new GameOverWindow(this);
 
@@ -32,7 +34,7 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
-        int sectionLen = LDrawWindow::width() / 8;
+        int sectionLen = LDrawWindow::height() / 8;
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
@@ -191,16 +193,19 @@ bool OthelloWindow::move(int x, int y)
 
     m_nowPlayer ^= 1;
 
-    m_pMessageWindow->m_HeadLabel->clear();
-    m_pMessageWindow->m_TailLabel->clear();
+    // 画右边的消息提示区域
+    m_pDrawContext->setBrushColor(LColor(0xffffff));
+    // 加一个像素是防止把棋盘的线边缘覆盖掉
+    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
 
-    m_pMessageWindow->m_HeadLabel->setText(LString("您的棋子数: ") << LString::fromInt(m_head.size()));
+    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
 
-    m_pMessageWindow->m_TailLabel->setText(LString("电脑棋子数: ") << LString::fromInt(m_tail.size()));
-    m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
+    m_pDrawContext->setPenColor(LColor(0x0000ff));
+    m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: ") << LString::fromInt(m_tail.size()), LFont(25), Lark::AlignCenter);
 
-    m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
-    m_pMessageWindow->m_whoseRoundMiddleLabel->setText(m_nowPlayer ? LString("您的") : LString("电脑"));
+    m_pDrawContext->setPenColor(m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
+    m_pDrawContext->drawText(m_roundRect, LString("当前是") << (m_nowPlayer ? LString("您的") : LString("电脑")) << LString("回合"), LFont(25), Lark::AlignCenter);
 
     return true;
 }
@@ -214,26 +219,13 @@ void OthelloWindow::init()
         m_tail.clear();
         m_target.clear();
         m_nowPlayer = true;
-
-        // 重置消息窗口
-        m_pMessageWindow->m_HeadLabel->clear();
-        m_pMessageWindow->m_TailLabel->clear();
-
-        m_pMessageWindow->m_HeadLabel->setText(LString("您的棋子数: 2"));
-
-        m_pMessageWindow->m_TailLabel->setText(LString("电脑棋子数: 2"));
-        m_pMessageWindow->m_TailLabel->setX(m_pMessageWindow->width() - m_pMessageWindow->m_TailLabel->width());
-
-        m_pMessageWindow->m_whoseRoundMiddleLabel->setColor(LPalette::ColorRole::GeneralText, LColor(0xff0000));
-        m_pMessageWindow->m_whoseRoundMiddleLabel->setText(LString("您的"));
     }
 
-    int sideLen = LDrawWindow::width();
-    int sectionLen = sideLen / 8;
+    int sectionLen = m_sideLen / 8;
 
     // 填充背景为白色
     m_pDrawContext->setBrushColor(LColor(0xffffff));
-    m_pDrawContext->fillRect(LRect(0, 0, sideLen, sideLen));
+    m_pDrawContext->fillRect(LRect(0, 0, LDrawWindow::width(), LDrawWindow::height()));
 
     // 初始化所有棋子的数据
     m_data.reserve(64);
@@ -257,17 +249,27 @@ void OthelloWindow::init()
     m_data[35].paint(m_pDrawContext);
     m_head.insert(35);
 
-    m_data[36].setState(MyCircle::PieceState::Tail);
+    m_data[36].setState(MyCircle::PieceState::Head);
     m_data[36].paint(m_pDrawContext);
-    m_tail.insert(36);
+    m_head.insert(36);
 
     // 画棋盘的分割线
     m_pDrawContext->setPenColor(LColor(0x000000));
-    for (int i = 1; i < 8; ++i)
+    for (int i = 1; i <= 8; ++i)
     {
-        m_pDrawContext->drawLine(0, i * sectionLen, sideLen, i * sectionLen);
-        m_pDrawContext->drawLine(i * sectionLen, 0, i * sectionLen, sideLen);
+        m_pDrawContext->drawLine(0, i * sectionLen, m_sideLen, i * sectionLen);
+        m_pDrawContext->drawLine(i * sectionLen, 0, i * sectionLen, m_sideLen);
     }
+
+    // 画右边的消息提示区域
+    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->drawText(m_headRect, LString("您的棋子数: 2"), LFont(25), Lark::AlignCenter);
+
+    m_pDrawContext->setPenColor(LColor(0x0000ff));
+    m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: 2"), LFont(25), Lark::AlignCenter);
+
+    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->drawText(m_roundRect, LString("当前是您的回合"), LFont(25), Lark::AlignCenter);
 
     scan();
 
