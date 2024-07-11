@@ -253,6 +253,10 @@ void OthelloWindow::init()
     m_data[36].paint(m_pDrawContext);
     m_head.insert(36);
 
+    m_data[1].setState(MyCircle::PieceState::Tail);
+    m_data[1].paint(m_pDrawContext);
+    m_tail.insert(1);
+
     // 画棋盘的分割线
     m_pDrawContext->setPenColor(LColor(0x000000));
     for (int i = 1; i <= 8; ++i)
@@ -276,7 +280,12 @@ void OthelloWindow::init()
     if (m_isGameOver)
     {
         m_isGameOver = false;
-
+        if (isAIMoving)
+        {
+            isAIMoving = false;
+            m_pAITimer->stop();
+        }
+        
         LDrawWindow::repaint();
     }
 }
