@@ -6,6 +6,16 @@
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
 
+const LColor OthelloWindow::m_headColor = LColor(0xff0000);
+
+const LColor OthelloWindow::m_headReadyColor = LColor(0xF08080);
+
+const LColor OthelloWindow::m_tailColor = LColor(0x0000ff);
+
+const LColor OthelloWindow::m_tailReadyColor = LColor(0x87CEFA);
+
+const LColor OthelloWindow::m_backgroundColor = LColor(0xffffff);
+
 
 OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 {
@@ -88,7 +98,7 @@ void OthelloWindow::scan()
     // 清理之前的提示
     for (auto &e : m_target.keys())
     {
-        m_pDrawContext->setBrushColor(LColor(0xffffff));
+        m_pDrawContext->setBrushColor(m_backgroundColor);
 
         if (MyCircle::PieceState::UnActivated == m_data[e].state())
         {
@@ -125,11 +135,11 @@ void OthelloWindow::scan()
             {
                 if (m_nowPlayer)
                 {
-                    m_pDrawContext->setBrushColor(LColor(0xF08080));
+                    m_pDrawContext->setBrushColor(m_headReadyColor);
                 }
                 else
                 {
-                    m_pDrawContext->setBrushColor(LColor(0x87CEFA));
+                    m_pDrawContext->setBrushColor(m_tailReadyColor);
                 }
                 m_pDrawContext->fillCircle(LCircle(m_data[convertToIndex(x, y)].m_roundCenterX, m_data[convertToIndex(x, y)].m_roundCenterY, m_data[convertToIndex(x, y)].m_roundRadius - 20));
 
@@ -194,17 +204,17 @@ bool OthelloWindow::move(int x, int y)
     m_nowPlayer ^= 1;
 
     // 画右边的消息提示区域
-    m_pDrawContext->setBrushColor(LColor(0xffffff));
+    m_pDrawContext->setBrushColor(m_backgroundColor);
     // 加一个像素是防止把棋盘的线边缘覆盖掉
     m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
 
-    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
 
-    m_pDrawContext->setPenColor(LColor(0x0000ff));
+    m_pDrawContext->setPenColor(m_tailColor);
     m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: ") << LString::fromInt(m_tail.size()), LFont(25), Lark::AlignCenter);
 
-    m_pDrawContext->setPenColor(m_nowPlayer ? LColor(0xff0000) : LColor(0x0000ff));
+    m_pDrawContext->setPenColor(m_nowPlayer ? m_headColor : m_tailColor);
     m_pDrawContext->drawText(m_roundRect, LString("当前是") << (m_nowPlayer ? LString("您的") : LString("电脑")) << LString("回合"), LFont(25), Lark::AlignCenter);
 
     return true;
@@ -224,7 +234,7 @@ void OthelloWindow::init()
     int sectionLen = m_sideLen / 8;
 
     // 填充背景为白色
-    m_pDrawContext->setBrushColor(LColor(0xffffff));
+    m_pDrawContext->setBrushColor(m_backgroundColor);
     m_pDrawContext->fillRect(LRect(0, 0, LDrawWindow::width(), LDrawWindow::height()));
 
     // 初始化所有棋子的数据
@@ -266,13 +276,13 @@ void OthelloWindow::init()
     }
 
     // 画右边的消息提示区域
-    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: 2"), LFont(25), Lark::AlignCenter);
 
-    m_pDrawContext->setPenColor(LColor(0x0000ff));
+    m_pDrawContext->setPenColor(m_tailColor);
     m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: 2"), LFont(25), Lark::AlignCenter);
 
-    m_pDrawContext->setPenColor(LColor(0xff0000));
+    m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_roundRect, LString("当前是您的回合"), LFont(25), Lark::AlignCenter);
 
     scan();

@@ -9,6 +9,7 @@
 #include "lhash.h"
 #include "ltimer.h"
 #include "lrect.h"
+#include "lcolor.h"
 
 #include "mycircle.h"
 #include "gameoverwindow.h"
@@ -55,6 +56,17 @@ private:
     static int convertToIndex(int x, int y) { return 8 * y + x; }
 
     static const LPair<int, int> directions[8];
+
+    static const LColor m_headColor;
+
+    // 当前红旗可以下的位置的颜色
+    static const LColor m_headReadyColor;
+
+    static const LColor m_tailColor;
+
+    static const LColor m_tailReadyColor;
+
+    static const LColor m_backgroundColor;
 
     int m_sideLen = 0;
 
