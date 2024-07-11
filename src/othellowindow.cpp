@@ -24,9 +24,9 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 
     m_sideLen = sideLen;
 
-    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 3);
-    m_tailRect = LRect(m_sideLen, m_sideLen / 3, 200, m_sideLen / 3);
-    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 3, 200, m_sideLen / 3);
+    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 6);
+    m_tailRect = LRect(m_sideLen, m_sideLen / 6, 200, m_sideLen / 6);
+    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 6, 200, m_sideLen / 6);
 
     m_pGameOverWindow = new GameOverWindow(this);
 
@@ -45,7 +45,13 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
-        int sectionLen = LDrawWindow::height() / 8;
+        // 限制鼠标的坐标必须在棋盘内
+        if (e->x() >= m_sideLen || e->y() >= m_sideLen)
+        {
+            return;
+        }
+
+        int sectionLen = m_sideLen / 8;
 
         int xIndex = e->x() / sectionLen;
         int yIndex = e->y() / sectionLen;
@@ -201,41 +207,6 @@ void OthelloWindow::init()
 
         m_data.append(MyCircle(pos.first() * sectionLen + sectionLen / 2, pos.second() * sectionLen + sectionLen / 2, sectionLen / 2 - 10));
     }
-
-    // TODO 初始数据，可根据自己喜好修改
-    // m_data[1].setState(MyCircle::PieceState::Tail);
-    // m_data[1].paint(m_pDrawContext);
-    // m_tail.insert(1);
-    // m_data[2].setState(MyCircle::PieceState::Head);
-    // m_data[2].paint(m_pDrawContext);
-    // m_head.insert(2);
-    // m_data[3].setState(MyCircle::PieceState::Head);
-    // m_data[3].paint(m_pDrawContext);
-    // m_head.insert(3);
-    // m_data[4].setState(MyCircle::PieceState::Head);
-    // m_data[4].paint(m_pDrawContext);
-    // m_head.insert(4);
-    // m_data[5].setState(MyCircle::PieceState::Head);
-    // m_data[5].paint(m_pDrawContext);
-    // m_head.insert(5);
-    // m_data[6].setState(MyCircle::PieceState::Head);
-    // m_data[6].paint(m_pDrawContext);
-    // m_head.insert(6);
-    // m_data[7].setState(MyCircle::PieceState::Head);
-    // m_data[7].paint(m_pDrawContext);
-    // m_head.insert(7);
-    // m_data[8].setState(MyCircle::PieceState::Tail);
-    // m_data[8].paint(m_pDrawContext);
-    // m_tail.insert(8);
-    // m_data[10].setState(MyCircle::PieceState::Tail);
-    // m_data[10].paint(m_pDrawContext);
-    // m_tail.insert(10);
-    // m_data[12].setState(MyCircle::PieceState::Tail);
-    // m_data[12].paint(m_pDrawContext);
-    // m_tail.insert(12);
-    // m_data[14].setState(MyCircle::PieceState::Tail);
-    // m_data[14].paint(m_pDrawContext);
-    // m_tail.insert(14);
 
     m_data[27].setState(MyCircle::PieceState::Tail);
     m_data[27].paint(m_pDrawContext);
