@@ -2,6 +2,7 @@
 
 #include "llog.h"
 #include "lstring.h"
+#include "lglyphicon.h"
 
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
@@ -141,8 +142,7 @@ void OthelloWindow::scan()
                 {
                     m_pDrawContext->setBrushColor(m_tailReadyColor);
                 }
-                m_pDrawContext->fillCircle(LCircle(m_data[convertToIndex(x, y)].m_roundCenterX, m_data[convertToIndex(x, y)].m_roundCenterY, m_data[convertToIndex(x, y)].m_roundRadius - 20));
-
+                m_pDrawContext->drawGlyphIcon(m_data[convertToIndex(x, y)].m_roundCenterX - LGlyphIcon::IconWidth / 2, m_data[convertToIndex(x, y)].m_roundCenterY - LGlyphIcon::IconHeight / 2, LGlyphIcon::IconName::Crosshair);
 
                 if (m_target.contains(convertToIndex(x, y)))
                 {
@@ -259,13 +259,9 @@ void OthelloWindow::init()
     m_data[35].paint(m_pDrawContext);
     m_head.insert(35);
 
-    m_data[36].setState(MyCircle::PieceState::Head);
+    m_data[36].setState(MyCircle::PieceState::Tail);
     m_data[36].paint(m_pDrawContext);
-    m_head.insert(36);
-
-    m_data[1].setState(MyCircle::PieceState::Tail);
-    m_data[1].paint(m_pDrawContext);
-    m_tail.insert(1);
+    m_tail.insert(36);
 
     // 画棋盘的分割线
     m_pDrawContext->setPenColor(LColor(0x000000));
@@ -295,7 +291,7 @@ void OthelloWindow::init()
             isAIMoving = false;
             m_pAITimer->stop();
         }
-        
+
         LDrawWindow::repaint();
     }
 }
