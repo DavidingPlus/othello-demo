@@ -51,6 +51,18 @@ private:
 
     void timeOutSlot();
 
+    /**
+     * @brief 判断玩家是否应当弃权，若是则相应执行
+     */
+    void judgeSkip();
+
+    void gameEnd();
+
+    /**
+     * @brief 画侧边栏信息
+     */
+    void drawSidebar();
+
     static LPair<int, int> convertToPair(int index) { return LPair<int, int>(index % 8, index / 8); }
 
     static int convertToIndex(int x, int y) { return 8 * y + x; }

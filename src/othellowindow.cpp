@@ -55,41 +55,10 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
         if (res)
         {
             scan();
-            if (m_target.empty())
-            {
-                m_nowPlayer ^= 1;
-                AIMove();
-                scan();
-
-                if (m_target.empty())
-                {
-                    m_isGameOver = true;
-
-                    LDrawWindow::repaint();
-
-                    if (m_head.size() == m_tail.size())
-                    {
-                        m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
-                    }
-                    else if (m_head.size() > m_tail.size())
-                    {
-                        m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
-                    }
-                    else
-                    {
-                        m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
-                    }
-
-                    m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
-
-                    m_pGameOverWindow->show();
-
-                    return;
-                }
-            }
+            judgeSkip();
+            AIMove();
 
             LDrawWindow::repaint();
-            AIMove();
         }
     }
 }
@@ -136,11 +105,11 @@ void OthelloWindow::scan()
             {
                 if (m_nowPlayer)
                 {
-                    m_pDrawContext->setBrushColor(m_headReadyColor);
+                    m_pDrawContext->setPenColor(m_headReadyColor);
                 }
                 else
                 {
-                    m_pDrawContext->setBrushColor(m_tailReadyColor);
+                    m_pDrawContext->setPenColor(m_tailReadyColor);
                 }
                 m_pDrawContext->drawGlyphIcon(m_data[convertToIndex(x, y)].m_roundCenterX - LGlyphIcon::IconWidth / 2, m_data[convertToIndex(x, y)].m_roundCenterY - LGlyphIcon::IconHeight / 2, LGlyphIcon::IconName::Crosshair);
 
@@ -202,20 +171,7 @@ bool OthelloWindow::move(int x, int y)
     }
 
     m_nowPlayer ^= 1;
-
-    // 画右边的消息提示区域
-    m_pDrawContext->setBrushColor(m_backgroundColor);
-    // 加一个像素是防止把棋盘的线边缘覆盖掉
-    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
-
-    m_pDrawContext->setPenColor(m_headColor);
-    m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
-
-    m_pDrawContext->setPenColor(m_tailColor);
-    m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: ") << LString::fromInt(m_tail.size()), LFont(25), Lark::AlignCenter);
-
-    m_pDrawContext->setPenColor(m_nowPlayer ? m_headColor : m_tailColor);
-    m_pDrawContext->drawText(m_roundRect, LString("当前是") << (m_nowPlayer ? LString("您的") : LString("电脑")) << LString("回合"), LFont(25), Lark::AlignCenter);
+    drawSidebar();
 
     return true;
 }
@@ -247,10 +203,43 @@ void OthelloWindow::init()
     }
 
     // TODO 初始数据，可根据自己喜好修改
+    // m_data[1].setState(MyCircle::PieceState::Tail);
+    // m_data[1].paint(m_pDrawContext);
+    // m_tail.insert(1);
+    // m_data[2].setState(MyCircle::PieceState::Head);
+    // m_data[2].paint(m_pDrawContext);
+    // m_head.insert(2);
+    // m_data[3].setState(MyCircle::PieceState::Head);
+    // m_data[3].paint(m_pDrawContext);
+    // m_head.insert(3);
+    // m_data[4].setState(MyCircle::PieceState::Head);
+    // m_data[4].paint(m_pDrawContext);
+    // m_head.insert(4);
+    // m_data[5].setState(MyCircle::PieceState::Head);
+    // m_data[5].paint(m_pDrawContext);
+    // m_head.insert(5);
+    // m_data[6].setState(MyCircle::PieceState::Head);
+    // m_data[6].paint(m_pDrawContext);
+    // m_head.insert(6);
+    // m_data[7].setState(MyCircle::PieceState::Head);
+    // m_data[7].paint(m_pDrawContext);
+    // m_head.insert(7);
+    // m_data[8].setState(MyCircle::PieceState::Tail);
+    // m_data[8].paint(m_pDrawContext);
+    // m_tail.insert(8);
+    // m_data[10].setState(MyCircle::PieceState::Tail);
+    // m_data[10].paint(m_pDrawContext);
+    // m_tail.insert(10);
+    // m_data[12].setState(MyCircle::PieceState::Tail);
+    // m_data[12].paint(m_pDrawContext);
+    // m_tail.insert(12);
+    // m_data[14].setState(MyCircle::PieceState::Tail);
+    // m_data[14].paint(m_pDrawContext);
+    // m_tail.insert(14);
+
     m_data[27].setState(MyCircle::PieceState::Tail);
     m_data[27].paint(m_pDrawContext);
     m_tail.insert(27);
-
     m_data[28].setState(MyCircle::PieceState::Head);
     m_data[28].paint(m_pDrawContext);
     m_head.insert(28);
@@ -298,9 +287,21 @@ void OthelloWindow::init()
 
 void OthelloWindow::AIMove()
 {
+    if (m_nowPlayer)
+    {
+        return;
+    }
+
     isAIMoving = true;
 
-    m_pAITimer->startOnce(1000);
+    if (m_pAITimer->isActive())
+    {
+        timeOutSlot();
+    }
+    else
+    {
+        m_pAITimer->startOnce(1000);
+    }
 }
 
 int OthelloWindow::AIStrategy()
@@ -321,38 +322,75 @@ void OthelloWindow::timeOutSlot()
     {
         move(index % 8, index / 8);
         scan();
-        if (m_target.empty())
-        {
-            m_nowPlayer ^= 1;
-            scan();
-
-            if (m_target.empty())
-            {
-                m_isGameOver = true;
-
-                LDrawWindow::repaint();
-
-                if (m_head.size() == m_tail.size())
-                {
-                    m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
-                }
-                else if (m_head.size() > m_tail.size())
-                {
-                    m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
-                }
-                else
-                {
-                    m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
-                }
-
-                m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
-
-                m_pGameOverWindow->show();
-
-                return;
-            }
-        }
+        judgeSkip();
 
         LDrawWindow::repaint();
     }
+}
+
+void OthelloWindow::gameEnd()
+{
+    m_isGameOver = true;
+
+    LDrawWindow::repaint();
+
+    if (m_head.size() == m_tail.size())
+    {
+        m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
+    }
+    else if (m_head.size() > m_tail.size())
+    {
+        m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
+    }
+    else
+    {
+        m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
+    }
+
+    m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
+
+    m_pGameOverWindow->show();
+}
+
+void OthelloWindow::judgeSkip()
+{
+    // m_target为空[无子可下]是当前玩家弃权的条件
+    while (m_target.empty())
+    {
+        // 交换玩家
+        m_nowPlayer ^= 1;
+        drawSidebar();
+        scan();
+        // 如果另一方也无子可下，游戏结束
+        if (m_target.empty())
+        {
+            gameEnd();
+            return;
+        }
+        if (m_nowPlayer) // AI玩家弃权，人类玩家走棋
+        {
+            return; // 退出，由人类玩家通过点击鼠标继续走棋
+        }
+        else // 人类玩家弃权，AI玩家走棋
+        {
+            AIMove();
+        }
+    }
+}
+
+void OthelloWindow::drawSidebar()
+{
+    // 画右边的消息提示区域
+    m_pDrawContext->setBrushColor(m_backgroundColor);
+    // 加一个像素是防止把棋盘的线边缘覆盖掉
+    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
+
+    m_pDrawContext->setPenColor(m_headColor);
+    m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
+
+    m_pDrawContext->setPenColor(m_tailColor);
+    m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: ") << LString::fromInt(m_tail.size()), LFont(25), Lark::AlignCenter);
+
+    m_pDrawContext->setPenColor(m_nowPlayer ? m_headColor : m_tailColor);
+    m_pDrawContext->drawText(m_roundRect, LString("当前是") << (m_nowPlayer ? LString("您的") : LString("电脑")) << LString("回合"), LFont(25), Lark::AlignCenter);
 }
