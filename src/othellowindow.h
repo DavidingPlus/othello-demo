@@ -107,6 +107,8 @@ private:
     LRect m_roundRect;
 
     LRect m_logoRect;
+
+    LRect m_endMsgRect;
 };
 
 

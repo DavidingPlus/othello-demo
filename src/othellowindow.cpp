@@ -24,10 +24,11 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 
     m_sideLen = sideLen;
 
-    m_headRect = LRect(m_sideLen, 0, 200, m_sideLen / 4 / 3);
-    m_tailRect = LRect(m_sideLen, m_sideLen / 4 / 3, 200, m_sideLen / 4 / 3);
-    m_roundRect = LRect(m_sideLen, 2 * m_sideLen / 4 / 3, 200, m_sideLen / 4 / 3);
-    m_logoRect = LRect(m_sideLen, m_sideLen / 4, 200, m_sideLen / 2);
+    m_headRect = LRect(m_sideLen, 0, 200, 80);
+    m_tailRect = LRect(m_sideLen, 80, 200, 80);
+    m_roundRect = LRect(m_sideLen, 160, 200, 80);
+    m_logoRect = LRect(m_sideLen, 240, 200, 200);
+    m_endMsgRect = LRect(m_sideLen, 440, 200, 200);
 
     m_pGameOverWindow = new GameOverWindow(this);
 
@@ -233,14 +234,7 @@ void OthelloWindow::init()
     }
 
     // 画右边的消息提示区域
-    m_pDrawContext->setPenColor(m_headColor);
-    m_pDrawContext->drawText(m_headRect, LString("您的棋子数: 2"), LFont(25), Lark::AlignCenter);
-
-    m_pDrawContext->setPenColor(m_tailColor);
-    m_pDrawContext->drawText(m_tailRect, LString("电脑棋子数: 2"), LFont(25), Lark::AlignCenter);
-
-    m_pDrawContext->setPenColor(m_headColor);
-    m_pDrawContext->drawText(m_roundRect, LString("当前是您的回合"), LFont(25), Lark::AlignCenter);
+    drawSidebar();
 
     scan();
 
@@ -306,22 +300,26 @@ void OthelloWindow::gameEnd()
 
     LDrawWindow::repaint();
 
+    m_pDrawContext->setPenColor(LColor(0x303030));
     if (m_head.size() == m_tail.size())
     {
-        m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
+        m_pDrawContext->drawText(m_endMsgRect, LString("平局，再大战 300 回合？\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        // m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
     }
     else if (m_head.size() > m_tail.size())
     {
-        m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
+        m_pDrawContext->drawText(m_endMsgRect, LString("恭喜您战胜电脑\n可能是运气好？\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        // m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
     }
     else
     {
-        m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
+        m_pDrawContext->drawText(m_endMsgRect, LString("您连电脑都打不过\n菜就多练！\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        // m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
     }
 
-    m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
+    // m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
 
-    m_pGameOverWindow->show();
+    // m_pGameOverWindow->show();
 }
 
 void OthelloWindow::judgeSkip()
@@ -356,6 +354,8 @@ void OthelloWindow::drawSidebar()
     m_pDrawContext->setBrushColor(m_backgroundColor);
     // 加一个像素是防止把棋盘的线边缘覆盖掉
     m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
+    m_pDrawContext->setBrushColor(m_headReadyColor);
+        m_pDrawContext->fillRect(m_logoRect);
 
     m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
