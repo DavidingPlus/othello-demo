@@ -29,7 +29,9 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
     m_tailRect = LRect(m_sideLen, 80, 200, 80);
     m_roundRect = LRect(m_sideLen, 160, 200, 80);
     m_logoRect = LRect(m_sideLen, 240, 200, 200);
-    m_endMsgRect = LRect(m_sideLen, 440, 200, 200);
+    m_battleMsgRect = LRect(m_sideLen, 440, 200, 100);
+    m_restartRect = LRect(m_sideLen, 540, 100, 100);
+    m_exitRect = LRect(m_sideLen + 100, 540, 100, 100);
 
     LString logo = LFileSystemEntry(LFileSystemPath("res/logo.png")).absolutePath();
     m_logoPixmap = new LPixmap(logo);
@@ -49,17 +51,19 @@ void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
-        // 如果处于游戏已结束的状态,那么只有点击m_endMsgRect才会响应
-        if (m_isGameOver)
+        // 如果按下“重新开始”
+        if (m_restartRect.contains(LPoint(e->x(), e->y())))
         {
-            if (m_endMsgRect.contains(LPoint(e->x(), e->y())))
-            {
-                init();
-            }
-            else
-            {
-                return;
-            }
+            // 模拟游戏结束
+            m_isGameOver = true;
+            init();
+            LDrawWindow::repaint();
+            return;
+        }
+        // 如果按下“退出游戏”
+        if (m_exitRect.contains(LPoint(e->x(), e->y())))
+        {
+            exit(0);
         }
 
         // 限制鼠标的坐标必须在棋盘内
@@ -251,6 +255,15 @@ void OthelloWindow::init()
     // 画 logo 。像素点 1 到像素点 200 刚好就是 200 个像素整
     m_pDrawContext->drawPixmap(1 + m_logoRect.x(), m_logoRect.y(), m_logoPixmap);
 
+    // 画战斗信息提示框
+    m_pDrawContext->setPenColor(LColor(0x303030));
+    m_pDrawContext->drawText(m_battleMsgRect, LString("游戏中..."), LFont(20), Lark::AlignCenter);
+
+    // 画"重新开始"和"退出游戏"
+    m_pDrawContext->drawRect(m_restartRect);
+    m_pDrawContext->drawText(m_restartRect, LString("重新开始"), LFont(20), Lark::AlignCenter);
+    m_pDrawContext->drawRect(m_exitRect);
+    m_pDrawContext->drawText(m_exitRect, LString("退出游戏"), LFont(20), Lark::AlignCenter);
     // 画右边的消息提示区域
     drawSidebar();
 
@@ -316,28 +329,22 @@ void OthelloWindow::gameEnd()
 {
     m_isGameOver = true;
 
-    LDrawWindow::repaint();
-
+    m_pDrawContext->setBrushColor(m_backgroundColor);
+    m_pDrawContext->fillRect(m_battleMsgRect);
     m_pDrawContext->setPenColor(LColor(0x303030));
     if (m_head.size() == m_tail.size())
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("平局!点此重新开始"), LFont(20), Lark::AlignCenter);
-        // m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
+        m_pDrawContext->drawText(m_battleMsgRect, LString("平局!"), LFont(20), Lark::AlignCenter);
     }
     else if (m_head.size() > m_tail.size())
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("红胜!点此重新开始"), LFont(20), Lark::AlignCenter);
-        // m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
+        m_pDrawContext->drawText(m_battleMsgRect, LString("红胜!"), LFont(20), Lark::AlignCenter);
     }
     else
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("蓝胜!点此重新开始"), LFont(20), Lark::AlignCenter);
-        // m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
+        m_pDrawContext->drawText(m_battleMsgRect, LString("蓝胜!"), LFont(20), Lark::AlignCenter);
     }
-
-    // m_pGameOverWindow->m_textLabel->setX((m_pGameOverWindow->width() - m_pGameOverWindow->m_textLabel->width()) / 2);
-
-    // m_pGameOverWindow->show();
+    LDrawWindow::repaint();
 }
 
 void OthelloWindow::judgeSkip()
@@ -371,7 +378,6 @@ void OthelloWindow::drawSidebar()
     m_pDrawContext->setBrushColor(m_backgroundColor);
     // 加一个像素是防止把棋盘的线边缘覆盖掉，并且不重绘 logo 区域
     m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, 240));
-    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 440, 200, 200));
 
     m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);

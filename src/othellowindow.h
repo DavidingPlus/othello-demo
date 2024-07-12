@@ -102,7 +102,11 @@ private:
 
     LPixmap *m_logoPixmap = nullptr;
 
-    LRect m_endMsgRect;
+    LRect m_battleMsgRect;
+
+    LRect m_restartRect;
+
+    LRect m_exitRect;
 };
 
 
