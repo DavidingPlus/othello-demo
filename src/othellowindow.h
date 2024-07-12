@@ -22,6 +22,8 @@ public:
 
     OthelloWindow(int sideLen);
 
+    ~OthelloWindow();
+
 
 protected:
 

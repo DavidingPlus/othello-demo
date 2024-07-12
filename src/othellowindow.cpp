@@ -1,6 +1,5 @@
 #include "othellowindow.h"
 
-#include "llog.h"
 #include "lstring.h"
 #include "lglyphicon.h"
 #include "lfilesystementry.h"
@@ -40,6 +39,20 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
     m_pAITimer->timeoutSignal.connect(this, &OthelloWindow::timeOutSlot);
 
     init();
+}
+
+OthelloWindow::~OthelloWindow()
+{
+    if (m_pAITimer)
+    {
+        delete m_pAITimer;
+        m_pAITimer = nullptr;
+    }
+    if (m_logoPixmap)
+    {
+        delete m_logoPixmap;
+        m_logoPixmap = nullptr;
+    }
 }
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
@@ -257,13 +270,14 @@ void OthelloWindow::init()
 
     // 画战斗信息提示框
     m_pDrawContext->setPenColor(LColor(0x303030));
-    m_pDrawContext->drawText(m_battleMsgRect, LString("游戏中..."), LFont(20), Lark::AlignCenter);
+    m_pDrawContext->drawText(m_battleMsgRect, LString("战斗中..."), LFont(20), Lark::AlignCenter);
 
     // 画"重新开始"和"退出游戏"
     m_pDrawContext->drawRect(m_restartRect);
     m_pDrawContext->drawText(m_restartRect, LString("重新开始"), LFont(20), Lark::AlignCenter);
     m_pDrawContext->drawRect(m_exitRect);
     m_pDrawContext->drawText(m_exitRect, LString("退出游戏"), LFont(20), Lark::AlignCenter);
+
     // 画右边的消息提示区域
     drawSidebar();
 
@@ -272,6 +286,7 @@ void OthelloWindow::init()
     if (m_isGameOver)
     {
         m_isGameOver = false;
+
         if (isAIMoving)
         {
             isAIMoving = false;
@@ -297,7 +312,7 @@ void OthelloWindow::AIMove()
     }
     else
     {
-        m_pAITimer->startOnce(10);
+        m_pAITimer->startOnce(1000);
     }
 }
 
@@ -330,20 +345,22 @@ void OthelloWindow::gameEnd()
     m_isGameOver = true;
 
     m_pDrawContext->setBrushColor(m_backgroundColor);
-    m_pDrawContext->fillRect(m_battleMsgRect);
+    m_pDrawContext->fillRect(LRect(1 + m_battleMsgRect.x(), m_battleMsgRect.y(), m_battleMsgRect.width(), m_battleMsgRect.height()));
     m_pDrawContext->setPenColor(LColor(0x303030));
+
     if (m_head.size() == m_tail.size())
     {
-        m_pDrawContext->drawText(m_battleMsgRect, LString("平局!"), LFont(20), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_battleMsgRect, LString("平手，再来300回合"), LFont(20), Lark::AlignCenter);
     }
     else if (m_head.size() > m_tail.size())
     {
-        m_pDrawContext->drawText(m_battleMsgRect, LString("红胜!"), LFont(20), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_battleMsgRect, LString("您胜利了，运气真好"), LFont(20), Lark::AlignCenter);
     }
     else
     {
-        m_pDrawContext->drawText(m_battleMsgRect, LString("蓝胜!"), LFont(20), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_battleMsgRect, LString("你失败了，菜就多练"), LFont(20), Lark::AlignCenter);
     }
+
     LDrawWindow::repaint();
 }
 
