@@ -40,13 +40,26 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
 
 void OthelloWindow::handleMousePressEvent(LMouseEvent *e)
 {
-    if (isAIMoving || m_isGameOver)
+    if (isAIMoving)
     {
         return;
     }
 
     if (Lark::Mouse_LeftButton == e->buttonCode())
     {
+        // 如果处于游戏已结束的状态,那么只有点击m_endMsgRect才会响应
+        if (m_isGameOver)
+        {
+            if (m_endMsgRect.contains(LPoint(e->x(), e->y())))
+            {
+                init();
+            }
+            else
+            {
+                return;
+            }
+        }
+
         // 限制鼠标的坐标必须在棋盘内
         if (e->x() >= m_sideLen || e->y() >= m_sideLen)
         {
@@ -266,7 +279,7 @@ void OthelloWindow::AIMove()
     }
     else
     {
-        m_pAITimer->startOnce(1000);
+        m_pAITimer->startOnce(10);
     }
 }
 
@@ -303,17 +316,17 @@ void OthelloWindow::gameEnd()
     m_pDrawContext->setPenColor(LColor(0x303030));
     if (m_head.size() == m_tail.size())
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("平局，再大战 300 回合？\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_endMsgRect, LString("平局!点此重新开始"), LFont(20), Lark::AlignCenter);
         // m_pGameOverWindow->m_textLabel->setText("平局，再大战 300 回合？");
     }
     else if (m_head.size() > m_tail.size())
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("恭喜您战胜电脑\n可能是运气好？\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_endMsgRect, LString("红胜!点此重新开始"), LFont(20), Lark::AlignCenter);
         // m_pGameOverWindow->m_textLabel->setText("恭喜您战胜电脑，可能是运气好？");
     }
     else
     {
-        m_pDrawContext->drawText(m_endMsgRect, LString("您连电脑都打不过\n菜就多练！\n点此重新开始"), LFont(25), Lark::AlignCenter);
+        m_pDrawContext->drawText(m_endMsgRect, LString("蓝胜!点此重新开始"), LFont(20), Lark::AlignCenter);
         // m_pGameOverWindow->m_textLabel->setText("您连电脑都打不过，菜就多练！");
     }
 
@@ -354,8 +367,6 @@ void OthelloWindow::drawSidebar()
     m_pDrawContext->setBrushColor(m_backgroundColor);
     // 加一个像素是防止把棋盘的线边缘覆盖掉
     m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
-    m_pDrawContext->setBrushColor(m_headReadyColor);
-        m_pDrawContext->fillRect(m_logoRect);
 
     m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);
