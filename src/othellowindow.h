@@ -10,6 +10,7 @@
 #include "ltimer.h"
 #include "lrect.h"
 #include "lcolor.h"
+#include "lpixmap.h"
 
 #include "mycircle.h"
 #include "gameoverwindow.h"
@@ -107,6 +108,8 @@ private:
     LRect m_roundRect;
 
     LRect m_logoRect;
+
+    LPixmap *m_logoPixmap = nullptr;
 
     LRect m_endMsgRect;
 };

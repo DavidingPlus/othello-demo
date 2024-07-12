@@ -3,6 +3,7 @@
 #include "llog.h"
 #include "lstring.h"
 #include "lglyphicon.h"
+#include "lfilesystementry.h"
 
 
 const LPair<int, int> OthelloWindow::directions[8] = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
@@ -29,6 +30,9 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
     m_roundRect = LRect(m_sideLen, 160, 200, 80);
     m_logoRect = LRect(m_sideLen, 240, 200, 200);
     m_endMsgRect = LRect(m_sideLen, 440, 200, 200);
+
+    LString logo = LFileSystemEntry(LFileSystemPath("res/logo.png")).absolutePath();
+    m_logoPixmap = new LPixmap(logo);
 
     m_pGameOverWindow = new GameOverWindow(this);
 
@@ -246,6 +250,9 @@ void OthelloWindow::init()
         m_pDrawContext->drawLine(i * sectionLen, 0, i * sectionLen, m_sideLen);
     }
 
+    // 画 logo 。像素点 1 到像素点 200 刚好就是 200 个像素整
+    m_pDrawContext->drawPixmap(1 + m_logoRect.x(), m_logoRect.y(), m_logoPixmap);
+
     // 画右边的消息提示区域
     drawSidebar();
 
@@ -363,10 +370,10 @@ void OthelloWindow::judgeSkip()
 
 void OthelloWindow::drawSidebar()
 {
-    // 画右边的消息提示区域
     m_pDrawContext->setBrushColor(m_backgroundColor);
-    // 加一个像素是防止把棋盘的线边缘覆盖掉
-    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, m_sideLen));
+    // 加一个像素是防止把棋盘的线边缘覆盖掉，并且不重绘 logo 区域
+    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 0, 200, 240));
+    m_pDrawContext->fillRect(LRect(1 + m_sideLen, 440, 200, 200));
 
     m_pDrawContext->setPenColor(m_headColor);
     m_pDrawContext->drawText(m_headRect, LString("您的棋子数: ") << LString::fromInt(m_head.size()), LFont(25), Lark::AlignCenter);

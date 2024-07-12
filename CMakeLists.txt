@@ -13,3 +13,5 @@ add_executable (OthelloDemo ${PROJECT_SOURCE_FILES})
 target_link_libraries (OthelloDemo ${CONAN_LIBS})
 
 file (GENERATE OUTPUT "${PROJECT_BINARY_DIR}/$<$<BOOL:${PROP_GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>lark.config" CONTENT "SdkPath=${CONAN_LARKSDK_ROOT}")
+
+file (COPY "${PROJECT_SOURCE_DIR}/res" DESTINATION ${PROJECT_BINARY_DIR})
