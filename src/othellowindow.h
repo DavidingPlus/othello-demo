@@ -13,17 +13,10 @@
 #include "lpixmap.h"
 
 #include "mycircle.h"
-#include "gameoverwindow.h"
-
-
-class GameOverWindow;
 
 
 class OthelloWindow : public LDrawWindow
 {
-
-    friend class GameOverWindow;
-
 
 public:
 
@@ -82,8 +75,6 @@ private:
     static const LColor m_backgroundColor;
 
     int m_sideLen = 0;
-
-    GameOverWindow *m_pGameOverWindow = nullptr;
 
     LVector<MyCircle> m_data;
 

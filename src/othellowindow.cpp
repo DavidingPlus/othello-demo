@@ -34,8 +34,6 @@ OthelloWindow::OthelloWindow(int sideLen) : LDrawWindow(200 + sideLen, sideLen)
     LString logo = LFileSystemEntry(LFileSystemPath("res/logo.png")).absolutePath();
     m_logoPixmap = new LPixmap(logo);
 
-    m_pGameOverWindow = new GameOverWindow(this);
-
     m_pAITimer = new LTimer(this);
     m_pAITimer->timeoutSignal.connect(this, &OthelloWindow::timeOutSlot);
 
